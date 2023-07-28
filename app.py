@@ -1,11 +1,32 @@
-from flask import Flask, request, abort, jsonify
-# from flask_cors import CORS, cross_origin
+# from flask import Flask, request, abort, jsonify
+from fastapi.responses import JSONResponse
+from pydantic import BaseModel
+from fastapi.middleware.cors import CORSMiddleware
 from utils import *
+from fastapi import FastAPI, APIRouter, HTTPException, status
 
-app = Flask(__name__)
+app = FastAPI()
 
-@app.route("/verify", methods=["POST"])
-async def verify():
+origins = [
+    "http://localhost"
+    "*"
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+class Images(BaseModel):
+    base64_img: str
+    image_url: str
+
+@app.post("/verify")
+async def verify(request: Images):
+
     """
     Compares two images to determine a face match.
 
@@ -24,29 +45,31 @@ async def verify():
         }
 
     """
-    data = request.get_json()
-    base64_img = load_image_from_base64(data["base64_img"])
-    image_url = load_image_from_url(data["image_url"])
+    base64_img = load_image_from_base64(request.base64_img)
+    image_url = load_image_from_url(request.image_url)
 
     face_encodings1 = get_face_encodings(base64_img)
     face_encodings2 = get_face_encodings(image_url)
 
     if len(face_encodings1) == 0 or len(face_encodings2) == 0:
-        abort(422)
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail={
+                "status": 422,
+                "error": "Unprocessable Entity",
+                "message": "No identifiable face was found. Please ensure that the image is clear and contains a visible face."
+            }
+        )
     
     
     result = compare_faces(face_encodings1, face_encodings2).tolist()[0]
-    return jsonify({
+
+    response_data = {
         "match_value": result,
         "match_cut_off": "30%"
-    }), 200
+    }
+
+    return JSONResponse(content=response_data, status_code=status.HTTP_200_OK)
 
 
-@app.errorhandler(422)
-def unprocessable(error):
-    return (jsonify({
-        "status": 422,
-        "error": "Unprocessable Entity",
-        "message": "No identifiable face was found. Please ensure that the image is clear and contains a visible face."
-    }), 422)
 
