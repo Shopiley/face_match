@@ -2,7 +2,7 @@
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
-from utils import *
+from app.utils import *
 from fastapi import FastAPI, APIRouter, HTTPException, status
 
 app = FastAPI()
@@ -46,7 +46,8 @@ async def verify(request: Images):
 
     """
     base64_img = load_image_from_base64(request.base64_img)
-    image_url = load_image_from_url(request.image_url)
+    image_url = load_image_from_base64(request.image_url)
+    # image_url = load_image_from_url(request.image_url)
 
     face_encodings1 = get_face_encodings(base64_img)
     face_encodings2 = get_face_encodings(image_url)
@@ -61,8 +62,8 @@ async def verify(request: Images):
             }
         )
     
-    
-    result = compare_faces(face_encodings1, face_encodings2).tolist()[0]
+    print(compare_faces(face_encodings1, face_encodings2), "COMPARE FACES")
+    result = compare_faces(face_encodings1, face_encodings2)
 
     response_data = {
         "match_value": result,

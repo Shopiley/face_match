@@ -44,12 +44,13 @@ def compare_faces(face_encodings1, face_encodings2):
         print("no face detected")
         return 0
 
-    tolerance = 1.0
+    tolerance = 0.6
     # Compare faces and return average match percentage
     matches = face_recognition.face_distance(face_encodings1, face_encodings2[0])
-    print(matches)
+    print(matches, "MATCHES")
 
-    clampedDistance = max(0, min(matches, tolerance))
+    # clampedDistance = matches[0]
+    clampedDistance = max(0, min(matches[0], tolerance))
     # match_percentage = matches.count(True) / len(matches) * 100
     match_percentage = 100 * (1 - (clampedDistance/tolerance))
     return match_percentage
@@ -57,17 +58,7 @@ def compare_faces(face_encodings1, face_encodings2):
 
 # img1 = face_recognition.load_image_file('images/nin.jpg')
 # known_face_encodings = get_face_encodings(img1)
-# test = face_recognition.load_image_file('images/sope2.jpg')
-
-# video_capture = cv2.VideoCapture(0)
-
-# while True:
-#     ret, frame = video_capture.read()
-#     print(video_capture.read())
-#     face_encodings = get_face_encodings(frame)
-
-#     compare_faces(known_face_encodings, face_encodings)
-
+# test = face_recognition.load_image_file('images/sope6.jpg')
     
 
 # print(compare_faces(get_face_encodings(img1), get_face_encodings(test)))
