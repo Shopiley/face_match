@@ -51,7 +51,6 @@ def compare_faces(face_encodings1, face_encodings2):
 
     # clampedDistance = matches[0]
     clampedDistance = max(0, min(matches[0], tolerance))
-    # match_percentage = matches.count(True) / len(matches) * 100
     match_percentage = 100 * (1 - (clampedDistance/tolerance))
     return match_percentage
 

@@ -9,5 +9,5 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
-CMD ["uvicorn", "app.app:app", "--reload", "--proxy-headers", "--host", "0.0.0.0", "--port", $PORT]
+CMD ["uvicorn", "app.app:app", "--proxy-headers", "--host", "0.0.0.0", "--port", $PORT]
 

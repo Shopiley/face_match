@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from app.utils import *
-from fastapi import FastAPI, APIRouter, HTTPException, status
+from fastapi import FastAPI, HTTPException, status
 
 app = FastAPI()
 
