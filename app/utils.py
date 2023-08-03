@@ -5,11 +5,12 @@ import base64
 import face_recognition
 
 """
-This function receives a base64 image encoding and an image URL
-encodes the image url
-compares both image encodings
-and returns a percentage match value
-cut off mark is 30%, a value below that indicates no match
+    This util service receives a base64 image encoding and an image URL
+    encodes the image url
+    compares both image encodings
+    and returns 
+            (1) a percentage match value: 0 indicates no match and 100 indicates a 100% match
+            (2) true or false is there is a match or not based on the tolerance level set     
 """
 
 def load_image_from_url(img_url):
@@ -31,33 +32,23 @@ def get_face_encodings(image):
     rgb_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
     # returns a list of faces in the image
-    face_locations = face_recognition.face_locations(rgb_image)  #[(231, 795, 498, 527)]
+    face_locations = face_recognition.face_locations(rgb_image)  #e.g [(231, 795, 498, 527)]
 
     # Get face encodings for any faces in the image
     face_encodings = face_recognition.face_encodings(rgb_image, face_locations)
 
     return face_encodings
 
+
 def compare_faces(face_encodings1, face_encodings2):
-    # If no faces are found, return 0% match
-    if len(face_encodings1) == 0 or len(face_encodings2) == 0:
-        print("no face detected")
-        return 0
 
     tolerance = 0.6
-    # Compare faces and return average match percentage
-    matches = face_recognition.face_distance(face_encodings1, face_encodings2[0])
-    print(matches, "MATCHES")
+    
+    face_distance = face_recognition.face_distance(face_encodings1, face_encodings2[0])
 
-    # clampedDistance = matches[0]
-    clampedDistance = max(0, min(matches[0], tolerance))
+    clampedDistance = max(0, min(face_distance[0], tolerance))
     match_percentage = 100 * (1 - (clampedDistance/tolerance))
-    return match_percentage
+    return match_percentage, bool(face_distance[0] <= tolerance)
 
 
 # img1 = face_recognition.load_image_file('images/nin.jpg')
-# known_face_encodings = get_face_encodings(img1)
-# test = face_recognition.load_image_file('images/sope6.jpg')
-    
-
-# print(compare_faces(get_face_encodings(img1), get_face_encodings(test)))
