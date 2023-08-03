@@ -60,7 +60,7 @@ async def verify(request: Images):
             }
         )
     
-    result = compare_faces(face_encodings1, face_encodings2)
+    match_value, match_bool = compare_faces(face_encodings1, face_encodings2)
 
     response_data = {
         "match_bool": match_bool,
