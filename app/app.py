@@ -39,8 +39,8 @@ async def verify(request: Images):
     Returns:
         A json containing a percentage match value of the two images.
         {
-            "match_value": result,
-            "match_cut_off": "30%"
+            "match_bool": match_bool,
+            "match_value": match_value,
         }
 
     """
@@ -60,12 +60,11 @@ async def verify(request: Images):
             }
         )
     
-    print(compare_faces(face_encodings1, face_encodings2), "COMPARE FACES")
     result = compare_faces(face_encodings1, face_encodings2)
 
     response_data = {
-        "match_value": result,
-        "match_cut_off": "30%"
+        "match_bool": match_bool,
+        "match_value": match_value,
     }
 
     return JSONResponse(content=response_data, status_code=status.HTTP_200_OK)
