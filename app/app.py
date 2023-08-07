@@ -43,7 +43,7 @@ async def verify(request: Images):
     """
     base64_img = load_image_from_base64(request.base64_img)
     image_url = load_image_from_url(request.image_url)
-
+    print(image_url, "image_url")
     face_encodings1 = get_face_encodings(base64_img)
     face_encodings2 = get_face_encodings(image_url)
 
