@@ -21,6 +21,7 @@ class Images(BaseModel):
 
 @app.post("/verify")
 async def verify(request: Images):
+    print("request")
 
     """
     Compares two images to determine a face match.
